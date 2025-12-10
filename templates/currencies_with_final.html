@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Валюты</title>
+</head>
+<body>
+<H2>Новости:</H2>
+<br>
+<p>{{news}}</p>
+<br>
+    {% if subs %}
+        <h2>Мои Избранные:</h2>
+        <ul>
+            {% for sub in subs %}
+                {% for currency in currencies %}
+                    {% if currency.char_code == sub %}
+                        <li>{{ currency.name }}: {{ currency.char_code }} - {{ currency.value }}</li>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <br>
+    <p>Мировые валюты:</p>
+    <ul>
+        {% for currency in currencies %}
+            <li>{{ currency.name }}: {{ currency.char_code }} - {{ currency.value }}</li>
+            <br>
+
+            {# форма для подсчёта конвертации #}
+            <form action="http://localhost:8000/count" method="post">
+                <input type="text" name="rubles_value" placeholder="Введите сумму в рублях"><br><br>
+                <input type="hidden" name="currency_value" value="{{ currency.value }}">
+                <input type="hidden" name="currency_nominal" value="{{ currency.nominal }}">
+                <input type="hidden" name="currency_char_code" value="{{ currency.char_code }}">
+                <input type="submit" value="Посчитать">
+            </form>
+
+            {# показываем результат, если он есть и относится к этой валюте #}
+            {% if final_values and currency.char_code == final_values[2] %}
+                <p>{{ final_values[0] }} рублей в {{ currency.name }}: {{ final_values[1] }}</p>
+            {% endif %}
+
+            {# отдельная форма для избранного (НЕ вложенная в предыдущую) #}
+            {% if user %}
+                <form action="/add_favorites" method="post">
+                    <input type="hidden" name="currency_name" value="{{ currency.char_code }}">
+                    <input type="submit" value="Добавить в избранное">
+                </form>
+            {% endif %}
+
+            <br>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="/">Главная</a>
+</body>
+</html>
