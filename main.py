@@ -247,6 +247,7 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(html.encode('utf-8'))
 
 
+
 if __name__ == "__main__":
     httpd = HTTPServer(("localhost", 8000), MyHandler)
     print("Server is running on http://localhost:8000")
